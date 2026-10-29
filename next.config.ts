@@ -1,9 +1,12 @@
+
 import type { NextConfig } from "next";
 
+const backendUrl = process.env.BACKEND_URL;
+
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+
   turbopack: {
     rules: {
       "*.css": {
@@ -11,6 +14,19 @@ const nextConfig: NextConfig = {
         as: "*.css",
       },
     },
+  },
+
+  async rewrites() {
+    if (!backendUrl) {
+      return [];
+    }
+
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${backendUrl}/api/v1/:path*`,
+      },
+    ];
   },
 };
 
